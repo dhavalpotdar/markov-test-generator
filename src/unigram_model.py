@@ -49,9 +49,7 @@ class UnigramModel:
         """Compute the log probability of a document."""
         if self.p is None:
             raise ValueError("This model is untrained")
-        return sum(
-            math.log(dot_product(encoding, self.p)) for encoding in encodings
-        )
+        return sum(math.log(dot_product(encoding, self.p)) for encoding in encodings)
 
 
 def dot_product(a: List[int], b: List[float]) -> float:

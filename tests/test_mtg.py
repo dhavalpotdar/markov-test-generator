@@ -1,5 +1,3 @@
-
-
 """Markov Text Generator.
 
 Patrick Wang, 2023
@@ -14,9 +12,7 @@ from src.mtg import finish_sentence
 
 def test_generator():
     """Test Markov text generator."""
-    corpus = nltk.word_tokenize(
-        nltk.corpus.gutenberg.raw("austen-sense.txt").lower()
-    )
+    corpus = nltk.word_tokenize(nltk.corpus.gutenberg.raw("austen-sense.txt").lower())
 
     words = finish_sentence(
         ["she", "was", "not"],
