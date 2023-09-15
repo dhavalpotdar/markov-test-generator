@@ -4,9 +4,9 @@ import nltk
 
 
 def finish_sentence(sentence, n, corpus, randomize):
-    '''
+    """
     Calls `next_word` in a loop until stopping conditon is met.
-    '''
+    """
     latest_word = sentence[-1]
     while not ((len(sentence) == 10) or (latest_word in (".", "?", "!"))):
         latest_word = next_word(sentence, n, corpus, randomize)
@@ -16,24 +16,26 @@ def finish_sentence(sentence, n, corpus, randomize):
 
 
 def next_word(sentence, n, corpus, randomize):
-    '''
+    """
     1. Creates ngrams
     2. Subsets ngrams that match the sentence
     3. Computes probabilities for each ngram
     4. If more than one most likely words are found, chooses first occurance in corpus
     5. If no word is found, decrements n by 1 and runs again
-    '''
+    """
     word_found = False
     while not word_found:
         if n == 0:
-            raise ValueError('Out of vocabulary.')
+            raise ValueError("Out of vocabulary.")
         else:
             pass
 
         ngram_list = create_ngrams(corpus, n)
         ngram_subset_list = matched_ngrams(ngram_list, sentence, n)
 
-        if (len(ngram_subset_list) == 0) and (n != 1):            # if no ngrams found, look for n-1 grams
+        if (len(ngram_subset_list) == 0) and (
+            n != 1
+        ):  # if no ngrams found, look for n-1 grams
             word_found = False
             n -= 1
             continue
@@ -42,9 +44,9 @@ def next_word(sentence, n, corpus, randomize):
             first_occuring_ngram = most_likely_ngrams[0]
             word_found = True
             pass
-        else: 
+        else:
             most_likely_ngrams = compute_next_word_probs(ngram_subset_list, randomize)
-            
+
             # if multiple ngrams found, select first occurence in corpus
             first_occuring_ngram = choose_first_occurence(
                 most_likely_ngrams, ngram_list
@@ -57,9 +59,9 @@ def next_word(sentence, n, corpus, randomize):
 
 
 def create_ngrams(corpus, n):
-    '''
+    """
     Creates n-grams from corpus.
-    '''
+    """
     ngram_list = []
     for i in range(len(corpus) - n + 1):
         ngram_list.append(corpus[i : i + n])
@@ -68,9 +70,9 @@ def create_ngrams(corpus, n):
 
 
 def matched_ngrams(ngram_list, sentence, n):
-    '''
+    """
     Finds matching ngrams.
-    '''
+    """
     matched_ngram_list = []
     for ngram in ngram_list:
         if " ".join(ngram[: n - 1]) == " ".join(sentence[-n + 1 :]):
@@ -81,10 +83,10 @@ def matched_ngrams(ngram_list, sentence, n):
 
 
 def compute_next_word_probs(ngram_list, randomize):
-    '''
+    """
     Picks most likely words if randomize=False, else picks randomly from distribution.
-    '''
-    ALPHA = 1                                           # constant for stupid backoff
+    """
+    ALPHA = 1  # constant for stupid backoff
 
     word_count_dict = {}
     for ngram in ngram_list:
@@ -132,9 +134,9 @@ def compute_next_word_probs(ngram_list, randomize):
 
 
 def choose_first_occurence(ngrams, corpus_ngram_list):
-    '''
+    """
     Returns the orrucence positions for the given ngrams in the corpus ngrams.
-    '''
+    """
     ngram_occurence_pos_dict = {}
     for ngram_to_find in ngrams:
         for idx, ngram in enumerate(corpus_ngram_list):
@@ -155,12 +157,11 @@ def choose_first_occurence(ngrams, corpus_ngram_list):
 
 
 if __name__ == "__main__":
-    
     corp = nltk.word_tokenize(nltk.corpus.gutenberg.raw("austen-sense.txt").lower())
     st = ["she", "was", "not"]
 
     N = 3
-    RANDOMIZE = True
+    RANDOMIZE = False
 
     # st = ['robot']; N=3
     # ['robot', ',', 'and', 'the', 'two', 'miss', 'steeles', ',', 'as', 'she']
@@ -173,5 +174,3 @@ if __name__ == "__main__":
 
     output = finish_sentence(sentence=st, corpus=corp, n=N, randomize=RANDOMIZE)
     print(output)
-
-
