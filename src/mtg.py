@@ -1,4 +1,4 @@
-import pandas as pd  # only used to remove duplicate ngrams from the most likely ones
+import pandas as pd  # only used for optimization
 import numpy as np
 import nltk
 
@@ -9,19 +9,22 @@ def finish_sentence(sentence, n, corpus, randomize):
     """
     latest_word = sentence[-1]
     while not ((len(sentence) == 10) or (latest_word in (".", "?", "!"))):
-        latest_word = next_word(sentence, n, corpus, randomize)
+        latest_word = stupid_backoff(sentence, n, corpus, randomize)
         sentence.append(latest_word)
         pass
     return sentence
 
 
-def next_word(sentence, n, corpus, randomize):
+def stupid_backoff(sentence, n, corpus, randomize):
     """
+    This function finds the next word in a deterministic manner if randomize=True.
+    It also implements stupid backoff.
+
     1. Creates ngrams
     2. Subsets ngrams that match the sentence
     3. Computes probabilities for each ngram
     4. If more than one most likely words are found, chooses first occurance in corpus
-    5. If no word is found, decrements n by 1 and runs again
+    5. If no word is found, decrements n by 1 and runs again (stupid backoff)
     """
     word_found = False
     while not word_found:
@@ -33,9 +36,7 @@ def next_word(sentence, n, corpus, randomize):
         ngram_list = create_ngrams(corpus, n)
         ngram_subset_list = matched_ngrams(ngram_list, sentence, n)
 
-        if (len(ngram_subset_list) == 0) and (
-            n != 1
-        ):  # if no ngrams found, look for n-1 grams
+        if (len(ngram_subset_list) == 0) and (n != 1):  # stupid backoff
             word_found = False
             n -= 1
             continue
