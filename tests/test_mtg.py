@@ -8,7 +8,6 @@ Jelinek 1985 "Markov Source Modeling of Text Generation"
 
 import nltk
 from src.mtg import finish_sentence
-nltk.download('gutenberg')
 
 
 def test_generator():
