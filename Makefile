@@ -1,6 +1,6 @@
 install:
 	pip install --upgrade pip &&\
-		pip install -r requirements.txt &&
+		pip install -r requirements.txt
 
 nltk-download:
 	python src/download_nltk_corpora.py
